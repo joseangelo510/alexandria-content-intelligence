@@ -1,0 +1,11 @@
+entrypoint = "app/page.tsx"
+run = "npm run dev:replit"
+
+[deployment]
+build = "npm run build:replit"
+run = "npm run start:replit"
+deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
