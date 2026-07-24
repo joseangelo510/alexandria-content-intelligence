@@ -60,7 +60,7 @@ Doing this once is editing. Doing it continuously across thousands of pages is a
 - [One-pager source](docs/ALEXANDRIA_ONE_PAGER.md)
 - [One-pager PDF](output/pdf/alexandria-one-pager.pdf)
 - [Project requirements and submission checklist](docs/ALEXANDRIA_PROJECT_REQUIREMENTS.md)
-- [Hackathon guide reviewed for this project](../tmp/pdfs/hacktago-guide.pdf)
+- [Official hackathon guide reviewed for this project](https://45321510.fs1.hubspotusercontent-na1.net/hubfs/45321510/YDC_hackathon_track_11142025.pdf)
 
 ## Local setup
 
