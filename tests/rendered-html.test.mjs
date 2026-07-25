@@ -24,6 +24,11 @@ test("server-renders the judge-ready Alexandria experience", async () => {
   const html = await response.text();
   assert.match(html, /Alexandria — Content Intelligence/);
   assert.match(html, /Don’t let your resource library decay like Alexandria/);
+  assert.match(html, /pages with outdated information/);
+  assert.match(html, /newly issued guidelines/);
+  assert.match(html, /thousands or tens of thousands of pages/);
+  assert.match(html, /accurate content at scale/);
+  assert.doesNotMatch(html, /old deadlines, outdated statistics, changed policies/);
   assert.match(html, /Three steps from stale to accurate/);
   assert.match(html, /A modern resource library decays one outdated page at a time/);
   assert.match(html, /I’m Jose\. I run an SEO agency/);

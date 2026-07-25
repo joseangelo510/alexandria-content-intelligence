@@ -289,9 +289,11 @@ export default function Home() {
               <span className="eyebrow">KEEP YOUR CONTENT TRUE</span>
               <h1>Don’t let your resource library decay like Alexandria.</h1>
               <p>
-                Alexandria scans your website, finds pages where the facts have gone stale—old
-                deadlines, outdated statistics, changed policies—and gives your editors cited,
-                ready-to-paste corrections.
+                Alexandria scans your website and finds pages with outdated information—old
+                statistics, newly issued guidelines, and other changes your content has not caught
+                up with—then gives your editors cited, ready-to-paste corrections. Built for
+                resource libraries with thousands or tens of thousands of pages, it makes accurate
+                content at scale manageable.
               </p>
               <p className="hero-platform">
                 Nothing publishes without a human. Your team keeps control of every update.
