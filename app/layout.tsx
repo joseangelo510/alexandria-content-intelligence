@@ -10,17 +10,17 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: "Alexandria — Content Intelligence",
-    description: "A content intelligence platform that watches what changed and keeps every page alive, accurate, and authoritative.",
+  description: "Scan your resource library for outdated facts and review cited, ready-to-paste corrections.",
     openGraph: {
       title: "Alexandria — Content Intelligence",
-      description: "Every website has become its own Alexandria.",
+      description: "Don’t let your resource library decay like Alexandria.",
       type: "website",
       images: [{ url: socialImage, width: 1731, height: 909, alt: "Alexandria — A living library for a changing world." }],
     },
     twitter: {
       card: "summary_large_image",
       title: "Alexandria — Content Intelligence",
-      description: "Every website has become its own Alexandria.",
+      description: "Don’t let your resource library decay like Alexandria.",
       images: [socialImage],
     },
   };

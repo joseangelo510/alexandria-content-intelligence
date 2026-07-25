@@ -102,13 +102,25 @@ const scanSteps = [
   "Contents is reading affected pages",
   "LlamaIndex is prioritizing long-page evidence",
   "Research is cross-checking claims",
-  "Preparing cited content patches",
+  "Preparing cited content updates",
 ];
 
-const pipeline = [
-  { number: "01", api: "Search", copy: "Discover pages and breaking changes" },
-  { number: "02", api: "Contents", copy: "Read the live page, without the noise" },
-  { number: "03", api: "Research", copy: "Reason, verify, cite, and recommend" },
+const howItWorks = [
+  {
+    number: "01",
+    title: "Scan",
+    copy: "Alexandria reads your live pages and finds the claims most likely to have gone out of date.",
+  },
+  {
+    number: "02",
+    title: "Verify",
+    copy: "It cross-checks each claim against current authoritative sources and cites exactly what changed.",
+  },
+  {
+    number: "03",
+    title: "Review and fix",
+    copy: "You see the old text beside ready-to-paste replacement copy, then decide what gets approved.",
+  },
 ];
 
 const ArrowIcon = () => <span aria-hidden="true">↗</span>;
@@ -134,7 +146,7 @@ export default function Home() {
   const [domain, setDomain] = useState("empowerly.com");
   const [signals, setSignals] = useState(initialSignals);
   const [selected, setSelected] = useState<Signal | null>(null);
-  const [filter, setFilter] = useState("All signals");
+  const [filter, setFilter] = useState("All updates");
   const [scanning, setScanning] = useState(false);
   const [scanStep, setScanStep] = useState(0);
   const [scanComplete, setScanComplete] = useState(false);
@@ -146,7 +158,7 @@ export default function Home() {
   const [copiedId, setCopiedId] = useState<number | null>(null);
 
   const filteredSignals = useMemo(() => {
-    if (filter === "All signals") return signals;
+    if (filter === "All updates") return signals;
     if (filter === "Needs review") return signals.filter((signal) => signal.status !== "Approved");
     return signals.filter((signal) => signal.severity === filter);
   }, [filter, signals]);
@@ -202,7 +214,7 @@ export default function Home() {
   }
 
   function contentPatch(signal: Signal) {
-    return `# Alexandria content patch\n\nPage: ${signal.title}\nURL: https://${signal.url}\nConfidence: ${signal.confidence}%\n\n## Before\n${signal.oldClaim}\n\n## After\n${signal.proposedCopy}\n\n## Why it changed\n${signal.issue}\n\n## Primary evidence\n${signal.sourceName}\n${signal.sourceUrl}\n`;
+    return `# Alexandria content update\n\nPage: ${signal.title}\nURL: https://${signal.url}\nConfidence: ${signal.confidence}%\n\n## Before\n${signal.oldClaim}\n\n## After\n${signal.proposedCopy}\n\n## Why it changed\n${signal.issue}\n\n## Primary evidence\n${signal.sourceName}\n${signal.sourceUrl}\n`;
   }
 
   const approvedCount = signals.filter((signal) => signal.status === "Approved").length;
@@ -227,21 +239,20 @@ export default function Home() {
 
         <nav aria-label="Primary navigation">
           <a className="nav-item active" href="#library">
-            <span className="nav-glyph">⌂</span> Overview
+            <span className="nav-glyph">⌂</span> Scan
           </a>
-          <a className="nav-item" href="#problem">
-            <span className="nav-glyph">!</span> The Problem
-          </a>
-          <a className="nav-item" href="#lighthouse">
-            <span className="nav-glyph">◉</span> The Lighthouse
-            <span className="nav-count">{signals.length}</span>
+          <a className="nav-item" href="#how-it-works">
+            <span className="nav-glyph">↳</span> How It Works
           </a>
           <a className="nav-item" href="#patches">
-            <span className="nav-glyph">✦</span> Content Patches
-            {approvedCount > 0 && <span className="nav-count gold">{approvedCount}</span>}
+            <span className="nav-glyph">◉</span> Findings
+            <span className="nav-count">{signals.length}</span>
           </a>
           <a className="nav-item" href="#sources">
-            <span className="nav-glyph">≡</span> Source Graph
+            <span className="nav-glyph">≡</span> Sources
+          </a>
+          <a className="nav-item" href="#problem">
+            <span className="nav-glyph">✦</span> Why Alexandria
           </a>
         </nav>
 
@@ -263,7 +274,7 @@ export default function Home() {
       <section className="main-content">
         <header className="topbar">
           <div className="live-status">
-            <span className="live-dot" /> {liveRun ? `Live scan · ${workspaceName}` : "Lighthouse is watching"}
+            <span className="live-dot" /> {liveRun ? `Live scan · ${workspaceName}` : "Ready to scan"}
           </div>
           <div className="topbar-actions">
             <span className="powered-pill">Powered by <strong>You.com</strong></span>
@@ -275,21 +286,20 @@ export default function Home() {
         <div className="content-wrap">
           <section className="hero" id="library">
             <div className="hero-copy">
-              <span className="eyebrow">THE MODERN ALEXANDRIA</span>
-              <h1>Every website has become its own Alexandria.</h1>
+              <span className="eyebrow">KEEP YOUR CONTENT TRUE</span>
+              <h1>Don’t let your resource library decay like Alexandria.</h1>
               <p>
-                Two thousand years ago, Alexandria attempted to collect everything humanity knew.
-                But every library has one fatal weakness: the moment the world changes, its knowledge
-                begins to age. Today, thousands of valuable pages are quietly becoming outdated.
+                Alexandria scans your website, finds pages where the facts have gone stale—old
+                deadlines, outdated statistics, changed policies—and gives your editors cited,
+                ready-to-paste corrections.
               </p>
               <p className="hero-platform">
-                We built Alexandria: a content intelligence platform that watches the horizon,
-                detects what changed, and keeps every page alive, accurate, and authoritative.
+                Nothing publishes without a human. Your team keeps control of every update.
               </p>
             </div>
 
             <div className="scan-card">
-              <label htmlFor="domain">Website to monitor</label>
+              <label htmlFor="domain">Enter a website to scan</label>
               <div className="domain-input-wrap">
                 <span aria-hidden="true">◎</span>
                 <input
@@ -300,7 +310,7 @@ export default function Home() {
                   aria-label="Website domain"
                 />
                 <button onClick={runScan} disabled={scanning}>
-                  {scanning ? "Watching…" : "Run Lighthouse"}
+                  {scanning ? "Scanning…" : "Scan my site"}
                   {!scanning && <ArrowIcon />}
                 </button>
               </div>
@@ -308,8 +318,12 @@ export default function Home() {
                 <span><span className="mini-dot green" /> {liveRun ? `${analyzedCount} priority pages analyzed` : "2,147 pages in the Empowerly sample"}</span>
                 <span>{liveRun ? "Live scan · just now" : "Sample snapshot · July 24, 2026"}</span>
               </div>
+              <p className="scan-helper">
+                We’ll read the highest-priority pages and show what changed. Try the sample now, or
+                add your You.com key to scan another site.
+              </p>
               <button className="api-key-toggle" type="button" onClick={() => setShowApiKey((current) => !current)}>
-                {showApiKey ? "Hide live API access" : "Scan any website with my You.com key"} <span>{showApiKey ? "−" : "+"}</span>
+                {showApiKey ? "Hide API key" : "Use my You.com key"} <span>{showApiKey ? "−" : "+"}</span>
               </button>
               {showApiKey && (
                 <div className="api-key-field">
@@ -328,97 +342,33 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="founder-problem" id="problem">
-            <div className="founder-story">
-              <span className="eyebrow light">WHY WE BUILT ALEXANDRIA</span>
-              <h2>I’m Jose. I own an SEO agency—and this problem follows every growing website.</h2>
-              <p>
-                Some of our clients have thousands of valuable pages. One of our hardest jobs is
-                keeping every statistic, deadline, policy, and recommendation aligned with what is
-                true right now. The work is painfully manual, and inaccurate information still gets
-                flagged before a team can find and fix it.
-              </p>
-              <p>
-                Even after we update a page, the world changes again. New data is published, a policy
-                shifts, or an authoritative source revises its guidance—and the content starts aging
-                all over again. Doing this once is editing. Doing it continuously across thousands of
-                pages is an intelligence problem.
-              </p>
-              <div className="founder-signature">
-                <span>JG</span>
-                <div><strong>Jose</strong><small>SEO agency owner · Alexandria builder</small></div>
+          <section className="how-it-works" id="how-it-works" aria-labelledby="how-it-works-title">
+            <div className="how-heading">
+              <div>
+                <span className="eyebrow">HOW IT WORKS</span>
+                <h2 id="how-it-works-title">Three steps from stale to accurate.</h2>
               </div>
+              <p>See what changed, why it matters, and the exact copy your team can review.</p>
             </div>
-
-            <div className="problem-stack" aria-label="Problems Alexandria solves">
-              <article>
-                <span>01</span>
-                <div><strong>Content at scale</strong><p>Thousands of pages make manual audits slow, expensive, and incomplete.</p></div>
-              </article>
-              <article>
-                <span>02</span>
-                <div><strong>Accuracy risk</strong><p>Outdated facts erode trust, weaken authority, and create avoidable client escalations.</p></div>
-              </article>
-              <article>
-                <span>03</span>
-                <div><strong>Perpetual change</strong><p>A page can become stale again days after an editor finishes updating it.</p></div>
-              </article>
-              <article className="solution-card">
-                <span>✦</span>
-                <div><strong>Alexandria watches continuously</strong><p>It finds what changed, shows where it matters, and prepares cited replacement copy for review.</p></div>
-              </article>
+            <div className="how-grid">
+              {howItWorks.map((step) => (
+                <article key={step.number}>
+                  <span>{step.number}</span>
+                  <strong>{step.title}</strong>
+                  <p>{step.copy}</p>
+                </article>
+              ))}
             </div>
-          </section>
-
-          <section className="pipeline-proof" aria-label="How Alexandria uses You.com">
-            <div className="pipeline-intro">
-              <span className="eyebrow">THE YOU.COM ENGINE</span>
-              <strong>Three APIs turn change into action.</strong>
-            </div>
-            {pipeline.map((stage, index) => (
-              <div className="pipeline-stage" key={stage.api}>
-                <span>{stage.number}</span>
-                <div><strong>{stage.api}</strong><small>{stage.copy}</small></div>
-                {index < pipeline.length - 1 && <b aria-hidden="true">→</b>}
-              </div>
-            ))}
-          </section>
-
-          <section className="tool-stack" aria-label="Alexandria technology stack">
-            <div className="tool-stack-heading">
-              <span className="eyebrow">WHAT POWERS ALEXANDRIA</span>
-              <h2>Not one prompt. A grounded intelligence workflow.</h2>
-              <p>Each You.com API has a specific job, and Alexandria turns the result into an editorial decision.</p>
-            </div>
-            <div className="tool-cards">
-              <article>
-                <span className="tool-number">01</span>
-                <strong>You.com Search API</strong>
-                <p>Discovers priority pages, recent news, and authoritative sources connected to claims on the website.</p>
-                <small>DISCOVERY · FRESHNESS · COVERAGE</small>
-              </article>
-              <article>
-                <span className="tool-number">02</span>
-                <strong>You.com Contents API</strong>
-                <p>Extracts clean, current page content so Alexandria can inspect the real claim—not a search snippet.</p>
-                <small>LIVE PAGE READING · CLEAN MARKDOWN</small>
-              </article>
-              <article>
-                <span className="tool-number">03</span>
-                <strong>You.com Research API</strong>
-                <p>Plans the investigation, cross-checks sources, reasons over changes, and returns structured cited findings.</p>
-                <small>REASONING · VERIFICATION · CITATIONS</small>
-              </article>
-              <article className="alexandria-layer">
-                <span className="tool-number">04</span>
-                <strong>Alexandria application layer</strong>
-                <p>Ranks risk and displays the current claim beside editor-ready replacement copy for human approval.</p>
-                <small>PRIORITIZATION · BEFORE/AFTER · ACTION</small>
-              </article>
-            </div>
-            <div className="built-with-strip">
-              <span>Application stack</span>
-              <strong>Next.js</strong><i>·</i><strong>React</strong><i>·</i><strong>TypeScript</strong><i>·</i><strong>LlamaIndex</strong><i>·</i><strong>Replit Autoscale</strong>
+            <div className="evidence-engine" aria-label="Powered by You.com and LlamaIndex">
+              <span>LIVE EVIDENCE PIPELINE</span>
+              <strong>You.com Search API <small>finds</small></strong>
+              <i>→</i>
+              <strong>You.com Contents API <small>reads</small></strong>
+              <i>→</i>
+              <strong>LlamaIndex <small>prioritizes</small></strong>
+              <i>→</i>
+              <strong>You.com Research API <small>verifies</small></strong>
+              <span className="hosting-note">HOSTED ON REPLIT</span>
             </div>
           </section>
 
@@ -427,7 +377,7 @@ export default function Home() {
               <div className="progress-head">
                 <div>
                   <span className="pulse-ring" />
-                  <strong>{scanComplete ? "Lighthouse scan complete" : scanSteps[scanStep]}</strong>
+                  <strong>{scanComplete ? "Website scan complete" : scanSteps[scanStep]}</strong>
                 </div>
                 <span>{scanComplete ? `${signals.length} verified ${signals.length === 1 ? "change" : "changes"}` : `${scanStep + 1} of ${scanSteps.length}`}</span>
               </div>
@@ -456,25 +406,25 @@ export default function Home() {
 
           <section className="metrics" aria-label="Content health metrics">
             <article className="metric-card dark">
-              <div className="metric-top"><span>{liveRun ? "Average confidence" : "Library vitality"}</span><span className="trend up">{liveRun ? "LIVE" : "↑ 3.2%"}</span></div>
+              <div className="metric-top"><span>{liveRun ? "Average confidence" : "Content health score"}</span><span className="trend up">{liveRun ? "LIVE" : "SAMPLE"}</span></div>
               <strong>{liveRun ? averageConfidence : 84}<span>{liveRun ? "%" : "/100"}</span></strong>
               <div className="vitality-bar"><span style={{ width: `${liveRun ? averageConfidence : 84}%` }} /></div>
               <p>{liveRun ? `${signals.length} cited findings in this priority scan.` : "Strong authority, with 187 pages needing attention."}</p>
             </article>
             <article className="metric-card">
-              <div className="metric-top"><span>{liveRun ? "Pages analyzed" : "Pages monitored"}</span><span className="metric-icon">▤</span></div>
+              <div className="metric-top"><span>{liveRun ? "Pages analyzed" : "Pages monitored"}</span>{liveRun ? <span className="metric-icon">▤</span> : <span className="trend">SAMPLE</span>}</div>
               <strong>{analyzedCount.toLocaleString()}</strong>
-              <p>{liveRun ? "Priority pages read live" : <><b>1,960</b> currently verified</>}</p>
+              <p>{liveRun ? "Priority pages read live" : <><b>1,960</b> currently verified in the sample</>}</p>
             </article>
             <article className="metric-card">
-              <div className="metric-top"><span>Truth drift</span><span className="metric-icon amber">≈</span></div>
+              <div className="metric-top"><span>Pages needing updates</span>{liveRun ? <span className="metric-icon amber">≈</span> : <span className="trend">SAMPLE</span>}</div>
               <strong>{liveRun ? signals.length : 187}</strong>
-              <p><b>{signals.filter((signal) => signal.severity !== "Medium").length}</b> high-impact findings</p>
+              <p><b>{signals.filter((signal) => signal.severity !== "Medium").length}</b> high-impact findings{liveRun ? "" : " in this sample"}</p>
             </article>
             <article className="metric-card">
-              <div className="metric-top"><span>{liveRun ? "Review queue" : "Time reclaimed"}</span><span className="metric-icon teal">◷</span></div>
+              <div className="metric-top"><span>{liveRun ? "Review queue" : "Time reclaimed"}</span>{liveRun ? <span className="metric-icon teal">◷</span> : <span className="trend">SAMPLE</span>}</div>
               <strong>{liveRun ? pendingCount : "43h"}</strong>
-              <p>{liveRun ? "Content patches awaiting approval" : "Estimated this month"}</p>
+              <p>{liveRun ? "Content updates awaiting approval" : "Estimated for this sample month"}</p>
             </article>
           </section>
 
@@ -482,14 +432,14 @@ export default function Home() {
             <div className="queue-panel" id="patches">
               <div className="section-heading">
                 <div>
-                  <span className="eyebrow">CONTENT PATCH QUEUE</span>
-                  <h2>What changed—and where it matters</h2>
+                  <span className="eyebrow">UPDATES TO REVIEW</span>
+                  <h2>Updates to review</h2>
                 </div>
-                <button className="text-button">View all {liveRun ? signals.length : 187} <ArrowIcon /></button>
+                <button className="text-button">View all {liveRun ? signals.length : 187} updates <ArrowIcon /></button>
               </div>
 
               <div className="filter-row" role="group" aria-label="Filter signals">
-                {["All signals", "Critical", "High", "Needs review"].map((item) => (
+                {["All updates", "Critical", "High", "Needs review"].map((item) => (
                   <button
                     key={item}
                     className={filter === item ? "active" : ""}
@@ -503,7 +453,7 @@ export default function Home() {
               <div className="signal-list">
                 {liveRun && filteredSignals.length === 0 && (
                   <div className="empty-state">
-                    <strong>No verified truth drift found</strong>
+                    <strong>No verified outdated content found</strong>
                     <p>The live You.com scan completed successfully. No high-confidence content changes need review in this priority sample.</p>
                   </div>
                 )}
@@ -516,7 +466,7 @@ export default function Home() {
                       <small>{signal.url}</small>
                     </span>
                     <span className="signal-meta">
-                      <small>Knowledge age</small>
+                      <small>Facts last verified</small>
                       <strong>{signal.age}</strong>
                     </span>
                     <span className={`status-mark ${signal.status === "Approved" ? "approved" : ""}`}>
@@ -534,8 +484,8 @@ export default function Home() {
                 <span className="beam" />
                 <span className="tower">A</span>
               </div>
-              <span className="eyebrow light">THE LIGHTHOUSE</span>
-              <h2>The horizon changed.</h2>
+              <span className="eyebrow light">VERIFIED SOURCES</span>
+              <h2>What changed, with proof.</h2>
               <p>{liveRun ? `Alexandria found ${signals.length} cited changes across ${analyzedCount} priority pages.` : "Alexandria found 4 authoritative changes connected to 32 high-impact pages."}</p>
               <div className="source-stack" id="sources">
                 {signals.slice(0, 3).map((signal) => (
@@ -554,8 +504,8 @@ export default function Home() {
           </section>
 
           <section className="closing-statement" aria-label="The Alexandria warning">
-            <span className="eyebrow light">THE WARNING</span>
-            <strong>The first Alexandria burned. The modern one decays one outdated page at a time.</strong>
+            <span className="eyebrow light">KEEP YOUR LIBRARY CURRENT</span>
+            <strong>The Library of Alexandria was lost all at once. A modern resource library decays one outdated page at a time.</strong>
             <div className="closing-actions">
               <a href="/alexandria-one-pager.pdf" target="_blank" rel="noreferrer">
                 Download one-pager <ArrowIcon />
@@ -563,6 +513,46 @@ export default function Home() {
               <a href="/alexandria-project-requirements.md" target="_blank" rel="noreferrer">
                 View project requirements <ArrowIcon />
               </a>
+            </div>
+          </section>
+
+          <section className="founder-problem" id="problem">
+            <div className="founder-story">
+              <span className="eyebrow light">WHY WE BUILT ALEXANDRIA</span>
+              <h2>I’m Jose. I run an SEO agency, and outdated content is one of the hardest problems to solve at scale.</h2>
+              <p>
+                Some of our clients have thousands of valuable pages. Keeping every statistic,
+                deadline, policy, and recommendation accurate is painfully manual, and teams can
+                still get flagged for information they did not know had changed.
+              </p>
+              <p>
+                Even after an editor updates a page, new data or guidance can make it stale again.
+                Doing this once is editing. Doing it continuously across thousands of pages is an
+                intelligence problem—and that is the problem Alexandria was built to solve.
+              </p>
+              <div className="founder-signature">
+                <span>JG</span>
+                <div><strong>Jose</strong><small>SEO agency owner · Alexandria builder</small></div>
+              </div>
+            </div>
+
+            <div className="problem-stack" aria-label="Problems Alexandria solves">
+              <article>
+                <span>01</span>
+                <div><strong>Too many pages</strong><p>Manual audits become slow, expensive, and incomplete as a resource library grows.</p></div>
+              </article>
+              <article>
+                <span>02</span>
+                <div><strong>Facts change quietly</strong><p>Deadlines, policies, prices, and statistics can become wrong without warning.</p></div>
+              </article>
+              <article>
+                <span>03</span>
+                <div><strong>Trust is at risk</strong><p>Outdated information weakens authority and creates avoidable client escalations.</p></div>
+              </article>
+              <article className="solution-card">
+                <span>✦</span>
+                <div><strong>Alexandria keeps watch</strong><p>It finds what changed and prepares cited replacement copy for human review.</p></div>
+              </article>
             </div>
           </section>
         </div>
@@ -602,13 +592,13 @@ export default function Home() {
                 </div>
                 <div className="timeline-item proposed">
                   <span>3</span>
-                  <div><small>PROPOSED CONTENT PATCH</small><strong>Editor-ready recommendation</strong><p>{selected.proposedCopy}</p></div>
+                  <div><small>PROPOSED CONTENT UPDATE</small><strong>Editor-ready recommendation</strong><p>{selected.proposedCopy}</p></div>
                 </div>
               </div>
 
               <section className="before-after" aria-label="Before and after content comparison">
                 <div className="comparison-heading">
-                  <div><span className="eyebrow">CONTENT PATCH</span><h3>Before and after</h3></div>
+                  <div><span className="eyebrow">CONTENT UPDATE</span><h3>Before and after</h3></div>
                   <span>Human-reviewed change</span>
                 </div>
                 <div className="comparison-grid">
@@ -625,9 +615,9 @@ export default function Home() {
                   <button onClick={() => copyUpdate(selected)}>{copiedId === selected.id ? "Copied ✓" : "Copy after text"}</button>
                   <a
                     href={`data:text/markdown;charset=utf-8,${encodeURIComponent(contentPatch(selected))}`}
-                    download={`alexandria-content-patch-${selected.id}.md`}
+                    download={`alexandria-content-update-${selected.id}.md`}
                   >
-                    Download content patch
+                    Download content update
                   </a>
                 </div>
               </section>
@@ -638,14 +628,14 @@ export default function Home() {
               </div>
             </div>
             <div className="drawer-footer">
-              <p>Approval prepares the patch. Publishing requires an authenticated CMS connection.</p>
+              <p>Approval marks the update ready. Publishing still requires an authenticated CMS connection.</p>
               <div>
                 <button className="secondary-button" onClick={() => setSelected(null)}>Keep for review</button>
                 <button
                   className={`approve-button ${selected.status === "Approved" ? "approved" : ""}`}
                   onClick={() => approveSignal(selected.id)}
                 >
-                  {selected.status === "Approved" ? "Content patch approved ✓" : "Approve content patch"}
+                  {selected.status === "Approved" ? "Content update approved ✓" : "Approve content update"}
                 </button>
               </div>
             </div>
