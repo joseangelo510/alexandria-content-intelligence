@@ -27,12 +27,13 @@ test("server-renders the judge-ready Alexandria experience", async () => {
   assert.match(html, /Three steps from stale to accurate/);
   assert.match(html, /A modern resource library decays one outdated page at a time/);
   assert.match(html, /I’m Jose\. I run an SEO agency/);
-  assert.match(html, /You\.com Search API/);
-  assert.match(html, /You\.com Contents API/);
-  assert.match(html, /You\.com Research API/);
+  assert.match(html, /Search API/);
+  assert.match(html, /Contents API/);
+  assert.match(html, /Research API/);
   assert.match(html, /LIVE EVIDENCE PIPELINE/);
-  assert.match(html, /HOSTED ON REPLIT/);
+  assert.match(html, /Application hosting and deployment/);
   assert.match(html, /LlamaIndex/);
+  assert.match(html, /Human-reviewed by design/);
   assert.doesNotMatch(html, /Cloudflare Workers via Sites/);
   assert.match(html, /Search/);
   assert.match(html, /Contents/);

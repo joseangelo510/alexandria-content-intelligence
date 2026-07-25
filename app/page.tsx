@@ -343,33 +343,26 @@ export default function Home() {
           </section>
 
           <section className="how-it-works" id="how-it-works" aria-labelledby="how-it-works-title">
-            <div className="how-heading">
-              <div>
-                <span className="eyebrow">HOW IT WORKS</span>
-                <h2 id="how-it-works-title">Three steps from stale to accurate.</h2>
+            <div className="how-intro">
+              <span className="eyebrow">HOW IT WORKS</span>
+              <h2 id="how-it-works-title">Three steps from stale to accurate.</h2>
+              <p>Alexandria turns a sprawling content audit into a focused editorial queue—without publishing over your team.</p>
+              <div className="review-promise">
+                <span aria-hidden="true">✓</span>
+                <p><strong>Human-reviewed by design.</strong> Every suggestion includes source evidence and waits for your approval.</p>
               </div>
-              <p>See what changed, why it matters, and the exact copy your team can review.</p>
             </div>
-            <div className="how-grid">
+            <ol className="workflow-list">
               {howItWorks.map((step) => (
-                <article key={step.number}>
-                  <span>{step.number}</span>
-                  <strong>{step.title}</strong>
-                  <p>{step.copy}</p>
-                </article>
+                <li key={step.number}>
+                  <span className="step-number"><small>STEP</small>{step.number}</span>
+                  <div>
+                    <strong>{step.title}</strong>
+                    <p>{step.copy}</p>
+                  </div>
+                </li>
               ))}
-            </div>
-            <div className="evidence-engine" aria-label="Powered by You.com and LlamaIndex">
-              <span>LIVE EVIDENCE PIPELINE</span>
-              <strong>You.com Search API <small>finds</small></strong>
-              <i>→</i>
-              <strong>You.com Contents API <small>reads</small></strong>
-              <i>→</i>
-              <strong>LlamaIndex <small>prioritizes</small></strong>
-              <i>→</i>
-              <strong>You.com Research API <small>verifies</small></strong>
-              <span className="hosting-note">HOSTED ON REPLIT</span>
-            </div>
+            </ol>
           </section>
 
           {(scanning || scanComplete) && (
@@ -504,7 +497,7 @@ export default function Home() {
           </section>
 
           <section className="closing-statement" aria-label="The Alexandria warning">
-            <span className="eyebrow light">KEEP YOUR LIBRARY CURRENT</span>
+            <span className="eyebrow">KEEP YOUR LIBRARY CURRENT</span>
             <strong>The Library of Alexandria was lost all at once. A modern resource library decays one outdated page at a time.</strong>
             <div className="closing-actions">
               <a href="/alexandria-one-pager.pdf" target="_blank" rel="noreferrer">
@@ -555,6 +548,31 @@ export default function Home() {
               </article>
             </div>
           </section>
+
+          <footer className="evidence-footer" aria-label="Alexandria technology partners">
+            <div className="evidence-footer-copy">
+              <span className="eyebrow">LIVE EVIDENCE PIPELINE</span>
+              <strong>Fresh sources in. Cited updates out.</strong>
+              <p>Alexandria combines live web intelligence, structured retrieval, and cloud hosting to keep every scan current and reviewable.</p>
+            </div>
+            <div className="evidence-partners">
+              <div>
+                <span>01</span>
+                <strong>You.com</strong>
+                <small>Search API · Contents API · Research API</small>
+              </div>
+              <div>
+                <span>02</span>
+                <strong>LlamaIndex</strong>
+                <small>Evidence retrieval and prioritization</small>
+              </div>
+              <div>
+                <span>03</span>
+                <strong>Replit</strong>
+                <small>Application hosting and deployment</small>
+              </div>
+            </div>
+          </footer>
         </div>
       </section>
 
