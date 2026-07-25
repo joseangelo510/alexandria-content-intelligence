@@ -39,7 +39,7 @@ Doing this once is editing. Doing it continuously across thousands of pages is a
 ## Current boundaries
 
 - The public deployment keeps the You.com API key in Replit Secrets; it is never shipped to the browser.
-- A live scan currently reads up to six priority pages; it is not yet a full sitemap crawl.
+- A live scan currently reads up to 25 priority pages; it is not yet a full sitemap crawl.
 - Approval does not write to a CMS. Draft-only CMS adapters are part of the production roadmap.
 - Scan history and scheduled monitoring are not yet persisted.
 

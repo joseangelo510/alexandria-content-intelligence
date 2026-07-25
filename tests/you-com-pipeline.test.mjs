@@ -24,7 +24,7 @@ test("uses LlamaIndex to preserve volatile evidence from across long pages", () 
   }]);
 
   assert.ok(result.chunkCount > 1);
-  assert.ok(result.selectedCount > 1);
+  assert.equal(result.selectedCount, 1);
   assert.match(result.text, /2026 deadline is now September 1/);
 });
 
@@ -78,14 +78,44 @@ test("runs Search, Contents, and Research and returns an editor-ready patch", as
     "https://api.you.com/v1/research",
   ]);
   assert.equal(calls[0].init.headers["X-API-Key"], "test-key");
+  assert.equal(calls[0].body.count, 25);
   assert.deepEqual(calls[1].body.urls, ["https://example.com/guide"]);
   assert.equal(calls[2].body.research_effort, "standard");
   assert.equal(result.mode, "live-you-com");
+  assert.equal(result.analyzedPageCount, 1);
   assert.equal(result.signals.length, 1);
   assert.equal(result.signals[0].url, "example.com/guide");
   assert.equal(result.signals[0].proposedCopy, "The price is $12.");
   assert.equal(result.signals[0].confidence, 96);
   assert.deepEqual(result.apiTrace.map((stage) => stage.api), ["Search", "Contents", "LlamaIndex", "Research"]);
+});
+
+test("scans 25 priority pages in Contents API batches of no more than 10", async () => {
+  const calls = [];
+  const searchResults = Array.from({ length: 25 }, (_, index) => ({
+    url: `https://example.com/page-${index + 1}`,
+    title: `Page ${index + 1}`,
+    description: `Current information for page ${index + 1}`,
+  }));
+  const responses = [
+    jsonResponse({ results: { web: searchResults } }),
+    jsonResponse({ output: searchResults.slice(0, 10).map((result) => ({ ...result, markdown: `${result.title} policy updated in 2026.` })) }),
+    jsonResponse({ output: searchResults.slice(10, 20).map((result) => ({ ...result, markdown: `${result.title} policy updated in 2026.` })) }),
+    jsonResponse({ output: searchResults.slice(20).map((result) => ({ ...result, markdown: `${result.title} policy updated in 2026.` })) }),
+    jsonResponse({ output: { content: { signals: [] } } }),
+  ];
+  const fetchImpl = async (url, init) => {
+    calls.push({ url, body: JSON.parse(init.body) });
+    return responses.shift();
+  };
+
+  const result = await runYouComScan({ domain: "example.com", apiKey: "test-key", fetchImpl });
+  const contentsCalls = calls.filter((call) => call.url === "https://ydc-index.io/v1/contents");
+
+  assert.deepEqual(contentsCalls.map((call) => call.body.urls.length), [10, 10, 5]);
+  assert.equal(result.analyzedPageCount, 25);
+  assert.match(result.apiTrace[1].detail, /^25 full pages extracted across 3 batches/);
+  assert.match(calls.at(-1).body.input, /https:\/\/example\.com\/page-25/);
 });
 
 test("a completed live scan with no verified changes is still a successful result", async () => {

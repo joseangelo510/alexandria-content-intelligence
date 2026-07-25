@@ -112,7 +112,7 @@ Parasail, CrewAI, Render, and other partner tools are not part of the current im
 
 These limitations must be stated honestly during judging:
 
-1. A live run is a priority-page proof of concept, currently reading up to six pages rather than crawling an entire multi-thousand-page site.
+1. A live run is a priority-page proof of concept, currently reading up to 25 pages rather than crawling an entire multi-thousand-page site.
 2. Approval changes product state only. Alexandria does not yet write directly to a CMS.
 3. Scan history is not persisted between sessions.
 4. Scheduled monitoring, notifications, user accounts, and team workflows are roadmap capabilities.

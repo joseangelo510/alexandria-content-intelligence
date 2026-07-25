@@ -321,7 +321,7 @@ export default function Home() {
                 <span>{liveRun ? "Live scan · just now" : "Sample snapshot · July 24, 2026"}</span>
               </div>
               <p className="scan-helper">
-                We’ll read the highest-priority pages and show what changed. Try the sample now, or
+                We’ll read up to 25 priority pages and show what changed. Try the sample now, or
                 add your You.com key to scan another site.
               </p>
               <button className="api-key-toggle" type="button" onClick={() => setShowApiKey((current) => !current)}>

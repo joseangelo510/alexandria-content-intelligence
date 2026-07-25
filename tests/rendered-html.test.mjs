@@ -45,6 +45,7 @@ test("server-renders the judge-ready Alexandria experience", async () => {
   assert.match(html, /Research/);
   assert.match(html, /Human approval required/);
   assert.match(html, /Use my You\.com key/);
+  assert.match(html, /read up to 25 priority pages/);
   assert.match(html, /Download one-pager/);
   assert.match(html, /View project requirements/);
   assert.match(html, /alexandria-social\.png/);
